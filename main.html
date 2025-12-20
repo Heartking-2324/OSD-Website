@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OffSecDiary — Offensive Security Intelligence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+
+  <!-- ================= COLLAPSIBLE SIDEBAR ================= -->
+<aside class="sidebar collapsed" id="sidebar">
+
+  <div class="sidebar-toggle" id="sidebarToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <nav class="sidebar-nav">
+  <a href="main.html" class="active">Home</a>
+  <a href="events.html">Events</a>
+  <a href="enquiry.html">Enquiry</a>
+  <a href="about.html">About</a>
+</nav>
+
+</aside>
+
+  <!-- ================= PERMANENT SYSTEM HEADER ================= -->
+<header class="system-header">
+
+  <div class="system-left">
+    <img src="assets/bootlogo.png" alt="OffSecDiary Logo" class="system-logo">
+    <span class="system-name">OFFSECDIARY</span>
+  </div>
+
+  <div class="system-right">
+    <div class="sys-item">
+      <span class="sys-label">SYSTEM</span>
+      <span class="sys-value online">OPERATIONAL</span>
+    </div>
+
+    <div class="sys-item">
+      <span class="sys-label">UPTIME</span>
+      <span class="sys-value" id="sys-uptime">00:00:00</span>
+    </div>
+
+    <div class="sys-item">
+      <span class="sys-label">THREAT</span>
+      <span class="sys-value threat-low" id="sys-threat">LOW</span>
+    </div>
+  </div>
+
+</header>
+
+<!-- ================= INTEL HEADER ================= -->
+<header class="intel-header reveal">
+  <canvas id="hero-canvas"></canvas>
+  <div class="intel-left">
+    <h1>OFFSECDIARY</h1>
+    <p class="intel-tagline">
+        Hack  |   Defend  |   Innovate
+    </p>
+  </div>
+
+  <div class="intel-right">
+    <div class="hero-logo">
+      <img src="assets/bootlogo_noname.PNG" alt="OffSecDiary Logo">
+    </div>
+  </div>
+</header>
+
+<!-- ================= ABOUT — SCROLL STACK ================= -->
+<section class="about-stack">
+  <div class="about-stack-container">
+
+      <div class="about-stack-identity">
+
+        <div class="op-terminal">
+          <div class="terminal-header">
+            <span class="term-dot red"></span>
+            <span class="term-dot yellow"></span>
+            <span class="term-dot green"></span>
+            <span class="term-title">NETWORK_TRACE — SESSION ACTIVE</span>
+          </div>
+
+          <div class="terminal-body" id="terminal-output"></div>
+        </div>
+
+        <span class="about-auth">[ LIVE OPERATION ]</span>
+
+      </div>
+
+    <!-- RIGHT: STACK + RAIL -->
+    <div class="about-stack-content-wrapper">
+
+      <div class="stack-rail">
+        <span class="stack-progress"></span>
+      </div>
+
+      <div class="about-stack-content">
+
+        <div class="stack-card">
+          <h2>ABOUT OFFSECDIARY</h2>
+          <p>
+            OffSecDiary is an offensive security initiative focused on understanding
+            how real adversaries think, operate, and exploit systems at scale.
+          </p>
+        </div>
+
+        <div class="stack-card">
+          <h2>OUR APPROACH</h2>
+          <p>
+            We do not rely on assumptions, checklists, or simulated compliance.
+            Our work is grounded in real-world attack techniques, adversary
+            emulation, exploit research, and operational security.
+          </p>
+        </div>
+
+        <div class="stack-card">
+          <h2>OBJECTIVE</h2>
+          <p>
+            Expose the weaknesses that matter <strong>before</strong> they are weaponized.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  © 2025 OffSecDiary — Offensive Security Intelligence
+</footer>
+
+<!-- ================= JS ================= -->
+<script>
+
+  /* ================= SIDEBAR TOGGLE ================= */
+
+const sidebar = document.getElementById("sidebar");
+const toggle = document.getElementById("sidebarToggle");
+
+toggle.addEventListener("click", () => {
+  sidebar.classList.toggle("collapsed");
+  document.body.classList.toggle("sidebar-open");
+});
+
+/* ================= Reveal entrance ================= */
+window.addEventListener("load", () => {
+  document.querySelectorAll(".reveal").forEach((el, i) => {
+    setTimeout(() => el.classList.add("active"), i * 180);
+  });
+});
+
+/* ================= Scroll stack observer + rail ================= */
+const cards = document.querySelectorAll(".stack-card");
+const progress = document.querySelector(".stack-progress");
+
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+      }
+    });
+
+    const activeCount = [...cards].filter(c =>
+      c.classList.contains("active")
+    ).length;
+
+    progress.style.height = (activeCount / cards.length) * 100 + "%";
+  },
+  { threshold: 0.4 }
+);
+
+cards.forEach(card => observer.observe(card));
+
+/* ================= SYSTEM HEADER: UPTIME ================= */
+
+const uptimeEl = document.getElementById("sys-uptime");
+
+// Capture boot time when page loads
+const bootTime = Date.now();
+
+function updateUptime(){
+  const elapsed = Math.floor((Date.now() - bootTime) / 1000);
+
+  const hours = String(Math.floor(elapsed / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0");
+  const seconds = String(elapsed % 60).padStart(2, "0");
+
+  uptimeEl.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+setInterval(updateUptime, 1000);
+updateUptime();
+
+/* ================= SYSTEM HEADER: THREAT LEVEL ================= */
+const threatEl = document.getElementById("sys-threat");
+const threatLevels = [
+  { label: "LOW", cls: "threat-low" },
+  { label: "GUARDED", cls: "threat-mid" },
+  { label: "ELEVATED", cls: "threat-high" }
+];
+
+let threatIndex = 0;
+setInterval(() => {
+  threatEl.className = "sys-value " + threatLevels[threatIndex].cls;
+  threatEl.textContent = threatLevels[threatIndex].label;
+  threatIndex = (threatIndex + 1) % threatLevels.length;
+}, 15000);
+
+/* ================= HERO ALPHANUMERIC PARTICLES ================= */
+
+const canvas = document.getElementById("hero-canvas");
+const ctx = canvas.getContext("2d");
+
+let w, h;
+function resize() {
+  w = canvas.width = canvas.offsetWidth;
+  h = canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const chars = "0123456789ABCDEF";
+const particles = [];
+const COUNT = 120;
+
+for (let i = 0; i < COUNT; i++) {
+  particles.push({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    z: Math.random(), // depth
+    char: chars[Math.floor(Math.random() * chars.length)],
+    speed: 0.2 + Math.random() * 0.4,
+    size: 10 + Math.random() * 10,
+    opacity: 0.15 + Math.random() * 0.4
+  });
+}
+
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+
+  for (const p of particles) {
+    p.y -= p.speed * (0.3 + p.z);
+    if (p.y < -20) {
+      p.y = h + 20;
+      p.x = Math.random() * w;
+      p.char = chars[Math.floor(Math.random() * chars.length)];
+    }
+
+    ctx.fillStyle = `rgba(255,43,43,${p.opacity})`;
+    ctx.font = `${p.size}px JetBrains Mono`;
+    ctx.fillText(p.char, p.x, p.y);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+/* ================= IP TRACE TERMINAL ================= */
+
+const terminal = document.getElementById("terminal-output");
+
+if (terminal) {
+  const sequence = [
+    "[*] Initializing trace module...",
+    "[*] Binding network interface...",
+    "[OK] Interface eth0 active",
+    "[*] Capturing inbound packet...",
+    "[*] Extracting source address...",
+    "[OK] IP detected: 185.23." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255),
+    "[*] Performing ASN lookup...",
+    "[OK] ASN resolved: AS13335",
+    "[*] Triangulating signal path...",
+    "[*] Correlation confidence: 94%",
+    "[OK] Location resolved",
+    "[DATA] Country: Unknown",
+    "[DATA] Region: Masked",
+    "[DATA] City: Obfuscated",
+    "[DONE] Trace completed successfully"
+  ];
+
+  let index = 0;
+
+  function addLine(text) {
+    const line = document.createElement("div");
+    line.className = "term-line";
+    line.textContent = text;
+
+    if (text.includes("[OK]")) line.classList.add("term-ok");
+    if (text.includes("[DATA]")) line.classList.add("term-dim");
+    if (text.includes("[*]")) line.classList.add("term-warn");
+    if (text.includes("[DONE]")) line.classList.add("term-red");
+
+    terminal.appendChild(line);
+    terminal.scrollTop = terminal.scrollHeight;
+  }
+
+  function runTerminal() {
+    terminal.innerHTML = "";
+    index = 0;
+
+    const interval = setInterval(() => {
+      addLine(sequence[index]);
+      index++;
+
+      if (index >= sequence.length) {
+        clearInterval(interval);
+        setTimeout(runTerminal, 4000); // loop after pause
+      }
+    }, 700);
+  }
+
+  runTerminal();
+}
+</script>
+
+</body>
+</html>
